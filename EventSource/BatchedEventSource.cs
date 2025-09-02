@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace EventSourceExample;
 
 [StructLayout(LayoutKind.Explicit, Pack = 1)]
-struct FrameHeader
+public struct FrameHeader
 {
     [FieldOffset(0)]
     public UInt16 EventId; // 2
@@ -97,8 +97,10 @@ public sealed class BatchedEventSource : EventSource
     public const int BatchEventId = 1;
     public const string SourceName = "BatchedEventSource";
 
+    [NonEvent]
     public void SendBatch(ReadOnlySpan<byte> span)
     {
+        Console.WriteLine($"SendBatch length={span.Length}");
         if (!IsEnabled() || span.Length == 0)
         {
             return;
