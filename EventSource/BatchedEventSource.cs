@@ -97,25 +97,32 @@ public sealed class BatchedEventSource : EventSource
     public const int BatchEventId = 1;
     public const string SourceName = "BatchedEventSource";
 
-    [NonEvent]
-    public void SendBatch(ReadOnlySpan<byte> span)
+    [Event(1, Level = EventLevel.Informational)]
+    public void SendBatch(byte[] span)
     {
         Console.WriteLine($"SendBatch length={span.Length}");
-        if (!IsEnabled() || span.Length == 0)
-        {
-            return;
-        }
-        unsafe
-        {
-            fixed (byte* p = span)
-            {
-                var ed = new EventData
-                {
-                    DataPointer = (IntPtr)p,
-                    Size = span.Length
-                };
-                WriteEventCore(BatchEventId, 1, &ed);
-            }
-        }
+        WriteEvent(BatchEventId, span);
+        // if (!IsEnabled() || span.Length == 0)
+        // {
+        //     return;
+        // }
+        // unsafe
+        // {
+        //     fixed (byte* p = span)
+        //     {
+        //         var ed = new EventData
+        //         {
+        //             DataPointer = (IntPtr)p,
+        //             Size = span.Length
+        //         };
+        //         WriteEvent(BatchEventId, 1, &ed);
+        //     }
+        // }
     }
+    //
+    // [NonEvent]
+    // public void SendBatch(ReadOnlySpan<byte> span)
+    // {
+    //     Dummy(span.ToArray());
+    // }
 }

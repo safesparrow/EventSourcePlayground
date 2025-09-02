@@ -17,7 +17,7 @@ public class Tests
         var s = new BatchedEventSource();
         var t= new SelfTracer();
         
-        var b = new BufferedEventSender(40, s.SendBatch);
+        var b = new BufferedEventSender(40, span => s.SendBatch(span.ToArray()));
         for (int i = 0; i < 1000; i++)
         {
             b.EnqueueStruct(1, new Op { Code = (byte)(i % 200) });
